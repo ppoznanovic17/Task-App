@@ -1,39 +1,53 @@
 const express = require('express')
 const router = express.Router()
 const Task = require('../models/task')
+const auth = require('../middleware/auth')
 
 
-router.post('/tasks', (req, res) => {
-    const task = new Task(req.body)
+router.post('/tasks', auth, async (req, res) => {
+    //const task = new Task(req.body)
 
-    task.save().then( () =>{
+    const task = new Task({
+        ...req.body,
+        owner: req.user._id
+    })
+
+    try{
+        await task.save()
         res.status(201).send(task)
-    }).catch( () => {
-        res.status(400).send(e)
-    })
+    }catch (e) {
+        res.status(404).send(e)
+    }
 })
 
-router.get('/tasks', (req, res) => {
-    Task.find().then( (tasks) => {
-        res.send(tasks)
-    }).catch( (err) => {
-        res.status(400).send(err)
-    })
+router.get('/tasks', auth, async (req, res) => {
+    try{
+
+        await req.user.populate('tasks').execPopulate()
+        res.send(req.user.tasks)
+    }catch (e) {
+
+    }
 })
 
-router.get('/tasks/:id', (req, res) => {
+router.get('/tasks/:id', auth, async (req, res) => {
     const _id = req.params.id
-
     //User.findById(_id)
+   try{
 
-    Task.find({_id: _id}).then( (tasks) => {
-        res.send(tasks)
-    }).catch( (err) => {
-        res.status(400).send(err)
-    })
+        const task = await Task.findOne({ _id, owner: req.user._id})
+        res.send(task)
+
+       if(!task){
+           res.status(404).send()
+       }
+
+   }catch (e) {
+        res.status(404).send()
+   }
 })
 
-router.patch('/tasks/:id', async (req, res) => {
+router.patch('/tasks/:id', auth, async (req, res) => {
 
     const updates = Object.keys(req.body)
     const allowedUpdates = ['description', 'completed']
@@ -45,16 +59,19 @@ router.patch('/tasks/:id', async (req, res) => {
         return res.status(400).send({error: 'Invalid updates'})
     }
 
-
     try{
-        const task = await User.findByIdAndUpdate(req.params.id, req.body, {
-            new: true, // vraca update usera a ne pronadjenog
-            runValidators: true // radi se i validacija
-        })
+
+        const task = await Task.findOne({_id: req.params.id, owner: req.user._id})
+
+
         if(!task){
             return res.status(400).send()
         }
-        res.send(task)
+
+        updates.forEach((update) => task[update] = req.body[update])
+        await task.save()
+
+         res.send(task)
     }catch (e) {
         res.status(400).send(e)
     }
@@ -62,17 +79,13 @@ router.patch('/tasks/:id', async (req, res) => {
 
 })
 
-router.delete('/tasks/:id', async (req, res) => {
+router.delete('/tasks/:id', auth, async (req, res) => {
 
     try{
-        const task = Task.remove({ _id: req.params.id }, function(err) {
-            if (!err) {
-                res.send("uspesno ")
-            }
-            else {
-                res.send('neuspesno')
-            }
-        });
+
+        const task = await Task.findOneAndDelete({_id: req.params.id, owner: req.user._id})
+
+
 
         if(!task){
             return  res.status(404).send("greska")
