@@ -83,6 +83,8 @@
       <change beforePath="$PROJECT_DIR$/../SKproject1/SKproject1.iml" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/../SKproject1/pom.xml" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/package-lock.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/package.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/models/task.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/models/task.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/models/user.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/models/user.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/routes/tasks.js" beforeDir="false" afterPath="$PROJECT_DIR$/src/routes/tasks.js" afterDir="false" />
@@ -291,7 +293,7 @@
       <workItem from="1575315315116" duration="13849000" />
       <workItem from="1575345686364" duration="519000" />
       <workItem from="1575480702452" duration="10717000" />
-      <workItem from="1575940564063" duration="7758000" />
+      <workItem from="1575940564063" duration="12737000" />
     </task>
     <servers />
   </component>
